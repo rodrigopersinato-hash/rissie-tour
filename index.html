@@ -72,7 +72,7 @@ video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ib{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12)}
 .ib:hover{background:rgba(255,255,255,.22)}
 .ib svg{width:18px;height:18px}
-.skip{padding:8px 14px;border-radius:6px;background:rgba(255,255,255,.12);font-size:13px}
+.skip{white-space:nowrap;padding:8px 14px;border-radius:6px;background:rgba(255,255,255,.12);font-size:13px}
 
 .choices{position:absolute;inset:auto 0 0 0;z-index:7;padding:6% 4% 3.2%;background:linear-gradient(0deg,rgba(0,0,0,.95),rgba(0,0,0,.75) 60%,transparent);transform:translateY(100%);transition:transform .55s cubic-bezier(.2,.8,.2,1)}
 .choices.on{transform:none}
@@ -114,6 +114,7 @@ body.fsl{overflow:hidden}
 .st-s{color:rgba(245,241,238,.75);margin-top:.7em;font-size:clamp(13px,1.6vw,17px)}
 .st-b{margin-top:1.4em;display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#000;border-radius:999px;padding:14px 28px;font-weight:500;font-size:16px}
 .st-b:hover{background:#fff}
+.st-fs{margin-top:12px;color:var(--ink);font-size:14px;border-bottom:1px solid rgba(255,255,255,.4);padding:4px 0}
 @media (max-width:700px){
  .choices{position:static;transform:none;display:none;background:none;padding:14px 0 0}
  .choices.on{display:block}
@@ -141,7 +142,7 @@ body.fsl{overflow:hidden}
   <audio id="mus" src="trilha.mp3" loop preload="auto"></audio>
   <audio id="nar" preload="auto"></audio>
   <div class="screen" id="screen">
-    <div class="start" id="start"><div class="st-in"><div class="st-k">Bem-vindo ao time</div><div class="st-t">Rissiê por dentro</div><div class="st-s">12 episódios curtos · você escolhe o caminho</div><button class="st-b" id="bStart" type="button"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M7 5l12 7-12 7z"/></svg>Começar o tour</button></div></div>
+    <div class="start" id="start"><div class="st-in"><div class="st-k">Bem-vindo ao time</div><div class="st-t">Rissiê por dentro</div><div class="st-s">12 episódios curtos · você escolhe o caminho</div><button class="st-b" id="bStart" type="button"><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M7 5l12 7-12 7z"/></svg>Começar o tour</button><br><button class="st-fs" id="bStartFs" type="button">Começar em tela cheia</button></div></div>
     <div class="scene-bg" id="sbg"></div>
     <video id="vid" playsinline muted preload="auto" hidden></video>
     <div class="grain"></div>
@@ -155,7 +156,7 @@ body.fsl{overflow:hidden}
         <button class="ib" id="bPlay" aria-label="Pausar"><svg viewBox="0 0 24 24" fill="currentColor" id="icoPlay"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></button>
         <span id="tc">0:00</span><span class="sp"></span>
         <button class="skip" id="bSkip">Pular para a escolha</button>
-        <button class="ib" id="bFs" aria-label="Tela cheia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        <button class="skip fsb" id="bFs" aria-label="Tela cheia"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:6px"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span id="fsTxt">Tela cheia</span></button>
       </div>
     </div>
     <div class="choices" id="ch" aria-live="polite">
@@ -336,15 +337,19 @@ if(matchMedia("(max-width:700px)").matches){$("screen").after($("ch"))}
 const mus=$("mus"); mus.volume=0.6;
 function applySound(){mus.muted=!soundOn;nar.muted=!soundOn;$("bSnd").setAttribute("aria-pressed",soundOn);$("bSnd").textContent=soundOn?"Som":"Sem som"}
 $("bSnd").onclick=()=>{soundOn=!soundOn;applySound();if(soundOn&&started)mus.play().catch(()=>{})};
+$("bStartFs").onclick=()=>{$("bStart").click();enterFs()};
 $("bStart").onclick=()=>{started=true;$("start").hidden=true;mus.currentTime=0;mus.play().catch(()=>{});load("abertura")};
 
 const scr=$("screen"), isMobile=()=>matchMedia("(max-width:700px)").matches;
 function placeChoices(fs){ if(fs){scr.appendChild($("ch"))} else if(isMobile()){scr.after($("ch"))} }
 function enterFs(){
   placeChoices(true);
-  if(scr.requestFullscreen){scr.requestFullscreen().then(()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock("landscape").catch(()=>{})}catch(e){}}).catch(()=>{scr.classList.add("fs");document.body.classList.add("fsl")})}
-  else if(scr.webkitRequestFullscreen){scr.webkitRequestFullscreen()}
-  else{scr.classList.add("fs");document.body.classList.add("fsl")}
+  const fallback=()=>{if(!document.fullscreenElement&&!document.webkitFullscreenElement){scr.classList.add("fs");document.body.classList.add("fsl");window.scrollTo(0,0)}};
+  try{
+    if(scr.requestFullscreen){scr.requestFullscreen().then(()=>{try{screen.orientation.lock("landscape").catch(()=>{})}catch(e){}}).catch(fallback)}
+    else if(scr.webkitRequestFullscreen){scr.webkitRequestFullscreen()}
+  }catch(e){}
+  setTimeout(fallback,350);
 }
 function exitFs(){
   if(document.fullscreenElement){document.exitFullscreen().catch(()=>{})}
@@ -352,7 +357,7 @@ function exitFs(){
   scr.classList.remove("fs");document.body.classList.remove("fsl");placeChoices(false);
 }
 const inFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement||scr.classList.contains("fs"));
-$("bFs").onclick=e=>{e.stopPropagation();inFs()?exitFs():enterFs()};
+$("bFs").onclick=e=>{e.stopPropagation();inFs()?exitFs():enterFs();setTimeout(()=>{$("fsTxt").textContent=inFs()?"Sair":"Tela cheia"},400)};
 document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement){scr.classList.remove("fs");placeChoices(false)}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&scr.classList.contains("fs"))exitFs()});
 load("abertura"); playing=false; setIcon(); vid.pause();
