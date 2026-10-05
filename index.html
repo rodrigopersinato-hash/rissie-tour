@@ -110,6 +110,24 @@ video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .screen.fs .choices,.screen:fullscreen .choices{position:absolute;transform:translateY(100%);display:block;background:linear-gradient(0deg,rgba(0,0,0,.95),rgba(0,0,0,.75) 60%,transparent);padding:6% 4% 3.2%}
 .screen.fs .choices.on,.screen:fullscreen .choices.on{transform:none}
 body.fsl{overflow:hidden}
+.treebox{position:relative;height:min(78vh,820px);border:1px solid var(--line);border-radius:12px;background:radial-gradient(ellipse at 20% 40%,rgba(226,85,122,.08),transparent 60%),rgba(255,255,255,.02);overflow:hidden;touch-action:none}
+.treebox svg{display:block;cursor:grab}
+.lk{fill:none;stroke:rgba(255,255,255,.22);stroke-width:1.3}
+.lk.d1{stroke:rgba(226,85,122,.55);stroke-width:2}
+.nd{cursor:pointer}
+.nd circle{fill:#070707;stroke:var(--accent);stroke-width:2}
+.nd.closed circle{fill:var(--accent)}
+.nd.leaf{cursor:default}.nd.leaf circle{fill:rgba(255,255,255,.55);stroke:none}
+.nd.root circle{fill:var(--accent)}
+.nd text{fill:var(--ink);font-family:var(--f-body);font-size:13px;paint-order:stroke;stroke:#070707;stroke-width:4px;stroke-linejoin:round}
+.nd.root text{font-family:var(--f-disp);font-weight:700;font-size:20px}
+.nd.sec text{font-family:var(--f-disp);font-weight:500;font-size:15px}
+.nd.sec text .lead{fill:var(--muted);font-family:var(--f-body);font-weight:400;font-size:11.5px}
+.nd.sub text{font-size:13.5px;fill:#F2C6D2}
+.nd.leaf text{font-size:12.5px;fill:rgba(245,241,238,.82)}
+.tools .sp{flex:1}
+.zb{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);font-size:18px}
+.tb.on{background:var(--ink);color:#000}
 .proc{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:48px 80px;display:flex;flex-direction:column;gap:22px;border-top:1px solid var(--line)}
 .proc-head .n{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent)}
 .proc-head h2{font-family:var(--f-disp);font-weight:700;font-size:clamp(28px,4.4vw,52px);line-height:1.05;margin:.2em 0 0;letter-spacing:-.02em}
@@ -147,7 +165,7 @@ body.fsl{overflow:hidden}
 .sys{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .sysc{padding:12px 14px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted)}
 .sysc b{color:var(--ink);font-weight:500;font-size:14px}
-@media (max-width:640px){.sec summary{grid-template-columns:auto minmax(0,1fr) auto}.sl{display:none}.sbody{padding:0 14px 16px}}
+@media (max-width:640px){.flow{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px}.fchip{flex:0 0 auto}.sec summary{grid-template-columns:auto minmax(0,1fr) auto}.sl{display:none}.sbody{padding:0 14px 16px}}
 .start{position:absolute;inset:0;z-index:12;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 40%,rgba(58,22,34,.55),rgba(0,0,0,.9) 75%);text-align:center;padding:16px}
 .st-k{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent)}
 .st-t{font-family:var(--f-disp);font-weight:700;font-size:clamp(30px,6vw,72px);line-height:1;margin-top:.2em;letter-spacing:-.02em}
@@ -179,6 +197,7 @@ body.fsl{overflow:hidden}
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
   <audio id="mus" src="trilha.mp3" loop preload="auto"></audio>
   <audio id="nar" preload="auto"></audio>
   <div class="screen" id="screen">
@@ -217,11 +236,12 @@ body.fsl{overflow:hidden}
   <div class="proc-head">
     <div class="n">Guia de processos</div>
     <h2>Como a Rissiê funciona</h2>
-    <p>A árvore completa, setor por setor, na ordem em que a peça anda. Toque em um setor para abrir cada etapa.</p>
+    <p>A árvore da empresa: do Grupo Rissiê saem os setores, de cada setor saem os processos e de cada processo, os passos.</p>
   </div>
   <div class="flow" id="flow" aria-label="Caminho da peça"></div>
-  <div class="tools"><label class="search" for="q"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" placeholder="Buscar: encomenda, RFID, acerto…"></label><button class="tb" id="expAll" type="button">Abrir tudo</button></div>
-  <div class="tree" id="tree"></div>
+  <div class="tools"><button class="tb on" id="expAll" type="button">Abrir a árvore toda</button><span class="sp"></span><button class="zb" id="zout" type="button" aria-label="Diminuir">−</button><button class="zb" id="zin" type="button" aria-label="Aumentar">+</button><button class="tb" id="zfit" type="button">Centralizar</button></div>
+  <div class="treebox" id="treeBox"></div>
+  <p class="hint">Toque num setor para abrir os ramos. Toque num ramo para ver os passos. Arraste para mover e use dois dedos (ou a rodinha do mouse) para aproximar.</p>
   <h3 class="sys-h">Sistemas que usamos</h3>
   <div class="sys" id="sys"></div>
 </section>
@@ -511,40 +531,76 @@ const TREE=[
 const SYS=[["SISPR","Sistema principal: remessas, clientes, financeiro, produtos e RFID."],["RRP","Painel interno: acertos, produtividade e indicadores."],["Syngoo","Atendimento às consultoras."],["Geniuz","Cadastro e app das revendedoras."],["Drive e planilhas","Encomendas, metas e controles."],["WhatsApp","Avisos entre setores e com as consultoras."],["EzPoint","Ponto dos funcionários."]];
 
 function buildTree(){
-  const flow=$("flow"), list=$("tree");
+  const flow=$("flow");
   TREE.forEach(s=>{
     const a=document.createElement("button");a.className="fchip";a.type="button";
-    a.innerHTML=`<b>${s.n}</b> `;a.append(s.t);a.onclick=()=>{const d=document.getElementById("p-"+s.id);d.open=true;d.scrollIntoView({behavior:"smooth",block:"start"})};
-    flow.appendChild(a);
-    const d=document.createElement("details");d.className="sec";d.id="p-"+s.id;
-    const sum=document.createElement("summary");
-    sum.innerHTML=`<span class="sn">${s.n}</span><span class="st"></span><span class="sl"></span><span class="chev" aria-hidden="true"></span>`;
-    sum.querySelector(".st").textContent=s.t;sum.querySelector(".sl").textContent=s.lider;
-    d.appendChild(sum);
-    const body=document.createElement("div");body.className="sbody";
-    const meta=document.createElement("dl");meta.className="smeta";
-    [["Líder",s.lider],["Equipe",s.equipe],["Recebe",s.entra],["Entrega",s.sai]].forEach(([k,v])=>{const dt=document.createElement("dt");dt.textContent=k;const dd=document.createElement("dd");dd.textContent=v;meta.append(dt,dd)});
-    body.appendChild(meta);
-    const grid=document.createElement("div");grid.className="subs";
-    s.sub.forEach((u,i)=>{
-      const c=document.createElement("div");c.className="sub";
-      const h=document.createElement("h4");h.innerHTML=`<span>${s.n}.${i+1}</span> `;h.append(u.t);c.appendChild(h);
-      const ol=document.createElement("ol");u.p.forEach(x=>{const li=document.createElement("li");li.textContent=x;ol.appendChild(li)});c.appendChild(ol);
-      grid.appendChild(c);
-    });
-    body.appendChild(grid);
-    if(s.ep){const b=document.createElement("button");b.type="button";b.className="watch";b.textContent="▶  Ver este episódio";
-      b.onclick=()=>{window.scrollTo({top:0,behavior:"smooth"});if(!started){$("bStart").click()}load(s.ep)};body.appendChild(b)}
-    d.appendChild(body);list.appendChild(d);
+    a.innerHTML=`<b>${s.n}</b> `;a.append(s.t);a.onclick=()=>focusSector(s.id);flow.appendChild(a);
   });
   const sys=$("sys");SYS.forEach(([k,v])=>{const c=document.createElement("div");c.className="sysc";const b=document.createElement("b");b.textContent=k;const p=document.createElement("span");p.textContent=v;c.append(b,p);sys.appendChild(c)});
-  $("expAll").onclick=()=>{const open=[...list.querySelectorAll("details")].some(d=>!d.open);list.querySelectorAll("details").forEach(d=>d.open=open);$("expAll").textContent=open?"Recolher tudo":"Abrir tudo"};
-  $("q").oninput=e=>{const q=e.target.value.trim().toLowerCase();
-    list.querySelectorAll("details").forEach(d=>{
-      if(!q){d.hidden=false;d.querySelectorAll("li").forEach(li=>li.classList.remove("hit"));return}
-      const txt=d.textContent.toLowerCase();const m=txt.includes(q);d.hidden=!m;if(m)d.open=true;
-      d.querySelectorAll("li").forEach(li=>li.classList.toggle("hit",li.textContent.toLowerCase().includes(q)));
-    })};
+  if(!window.d3){$("treeBox").textContent="Não foi possível carregar a árvore. Atualize a página.";return}
+
+  const data={name:"Grupo Rissiê",kind:"root",children:TREE.map(s=>({name:s.n+"  "+s.t,id:s.id,lead:s.lider,ep:s.ep,kind:"sec",
+    children:s.sub.map((u,i)=>({name:u.t,kind:"sub",children:u.p.map(x=>({name:x,kind:"leaf"}))}))}))};
+  const COLW=[0,190,500,790], WRAP={root:20,sec:28,sub:26,leaf:44};
+  const box=$("treeBox"), W=()=>box.clientWidth, H=()=>box.clientHeight;
+  const svg=d3.select(box).append("svg").attr("width","100%").attr("height","100%");
+  const g=svg.append("g"), gl=g.append("g").attr("class","links"), gn=g.append("g").attr("class","nodes");
+  const zoom=d3.zoom().scaleExtent([0.25,2.5]).on("zoom",e=>g.attr("transform",e.transform));
+  svg.call(zoom).on("dblclick.zoom",null);
+
+  function wrap(str,n){const w=str.split(" ");const lines=[];let cur="";w.forEach(x=>{if((cur+" "+x).trim().length>n&&cur){lines.push(cur);cur=x}else cur=(cur+" "+x).trim()});if(cur)lines.push(cur);return lines}
+  const root=d3.hierarchy(data);
+  root.descendants().forEach((d,i)=>{d.id=i;d.lines=wrap(d.data.name,WRAP[d.data.kind]);d._children=d.children;if(d.depth>=1)d.children=null});
+  const ln=d=>d.lines.length+(d.data.kind==="sec"?0.8:0);
+  const layout=d3.tree().nodeSize([17,1]).separation((a,b)=>(ln(a)+ln(b))/2+(a.parent===b.parent?0.5:1.2));
+
+  function update(src,dur=350){
+    layout(root);
+    root.each(d=>{d.y=COLW[d.depth]});
+    const nodes=root.descendants(), links=root.links();
+    const t=svg.transition().duration(dur);
+    const node=gn.selectAll("g.nd").data(nodes,d=>d.id);
+    const en=node.enter().append("g").attr("class",d=>"nd "+d.data.kind).attr("transform",`translate(${src.y0||0},${src.x0||0})`).attr("opacity",0)
+      .on("click",(e,d)=>{e.stopPropagation();toggle(d)});
+    en.append("circle").attr("r",d=>d.data.kind==="root"?9:d.data.kind==="sec"?7:d.data.kind==="sub"?5:3.2);
+    const tx=en.append("text").attr("x",d=>d.data.kind==="root"?-14:11).attr("text-anchor",d=>d.data.kind==="root"?"end":"start");
+    tx.each(function(d){const el=d3.select(this);const off=-(d.lines.length-1)*0.6;
+      d.lines.forEach((l,i)=>el.append("tspan").attr("x",d.data.kind==="root"?-14:11).attr("dy",i===0?(off+0.35)+"em":"1.2em").text(l));
+      if(d.data.kind==="sec"){el.append("tspan").attr("class","lead").attr("x",11).attr("dy","1.25em").text(d.data.lead)}});
+    node.merge(en).transition(t).attr("transform",d=>`translate(${d.y},${d.x})`).attr("opacity",1);
+    node.merge(en).classed("closed",d=>!!d._children&&!d.children);
+    node.exit().transition(t).attr("transform",`translate(${src.y},${src.x})`).attr("opacity",0).remove();
+    const diag=d3.linkHorizontal().x(d=>d.y).y(d=>d.x);
+    const link=gl.selectAll("path").data(links,d=>d.target.id);
+    const le=link.enter().append("path").attr("class",d=>"lk d"+d.target.depth).attr("d",()=>{const o={x:src.x0||0,y:src.y0||0};return diag({source:o,target:o})});
+    link.merge(le).transition(t).attr("d",diag);
+    link.exit().transition(t).attr("d",()=>{const o={x:src.x,y:src.y};return diag({source:o,target:o})}).remove();
+    root.each(d=>{d.x0=d.x;d.y0=d.y});
+  }
+  function toggle(d){ if(d.data.kind==="leaf")return; d.children=d.children?null:d._children; update(d); }
+  function fit(dur=500){
+    const b=g.node().getBBox(); const pad=30; const k=Math.min(1.1,Math.max(0.3,Math.min((W()-pad*2)/b.width,(H()-pad*2)/b.height)));
+    svg.transition().duration(dur).call(zoom.transform,d3.zoomIdentity.translate(pad-b.x*k+Math.max(0,(W()-pad*2-b.width*k)/2),pad-b.y*k+Math.max(0,(H()-pad*2-b.height*k)/2)).scale(k));
+  }
+  window.focusSector=id=>{
+    const d=root.children.find(c=>c.data.id===id); if(!d)return;
+    root.children.forEach(c=>{if(c!==d)c.children=null});
+    d.children=d._children; d.children.forEach(c=>c.children=c._children);
+    update(d,0);
+    $("processos").scrollIntoView({behavior:"smooth"});
+    const k=0.85; svg.transition().duration(600).call(zoom.transform,d3.zoomIdentity.translate(40-d.y*k,H()/2-d.x*k).scale(k));
+  };
+  $("expAll").onclick=()=>{
+    const allOpen=root.children.every(c=>c.children&&c.children.every(s=>s.children));
+    root.descendants().forEach(d=>{if(d.depth>=1&&d._children)d.children=allOpen?null:d._children});
+    $("expAll").textContent=allOpen?"Abrir a árvore toda":"Recolher";
+    update(root,0); fit(400);
+  };
+  $("zin").onclick=()=>svg.transition().call(zoom.scaleBy,1.3);
+  $("zout").onclick=()=>svg.transition().call(zoom.scaleBy,1/1.3);
+  $("zfit").onclick=()=>fit();
+  root.x0=0;root.y0=0;update(root,0);fit(0);
+  addEventListener("resize",()=>fit(0));
 }
 buildTree();
 
