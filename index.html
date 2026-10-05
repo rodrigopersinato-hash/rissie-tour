@@ -249,7 +249,11 @@ function load(id){
   $("shotTxt").textContent=s.shot; $("tip").hidden=true;
   const src=custom[id]||VID[id];
   if(src){vid.src=src;vid.hidden=false;$("shot").hidden=true;vid.currentTime=0;
-    vid.muted=true;vid.loop=true;vid.play().catch(()=>{})}
+    vid.muted=true;vid.loop=false;
+    rate=Math.max(0.6,Math.min(1,8/((NAR[id]||8)+0.6)));
+    vid.defaultPlaybackRate=rate;vid.playbackRate=rate;
+    vid.onloadedmetadata=()=>{vid.playbackRate=rate};
+    vid.play().catch(()=>{})}
   if(started){nar.src="narr/"+id+".mp3";nar.currentTime=0;nar.muted=!soundOn;nar.play().catch(()=>{});duck(true)}
   else{vid.hidden=true;vid.removeAttribute("src");$("shot").hidden=false}
   const L=$("hsLayer"); L.innerHTML="";
@@ -271,7 +275,7 @@ function openTip(h,b){
   tip.style.left=Math.max(8,x)+"px";tip.style.top=Math.max(8,Math.min(y,H-160))+"px";
 }
 $("screen").addEventListener("click",e=>{if(!e.target.closest(".tip,.hs,.ctrl,.choices,.shot")){$("tip").hidden=true;document.querySelectorAll(".hs").forEach(x=>x.classList.remove("open"))}});
-function dur(){const v=(!vid.hidden&&vid.duration)?vid.duration:DUR;const n=(started&&nar.duration&&isFinite(nar.duration))?nar.duration+0.6:0;return Math.max(v,n)}
+function dur(){return started&&NAR[cur]?Math.max(8,NAR[cur]+0.8):(!vid.hidden&&vid.duration?vid.duration:DUR)}
 function showChoices(){phase="choice";ct=0;$("ch").classList.add("on")}
 function trail(){
   const T=$("trail");T.innerHTML="";
@@ -284,6 +288,8 @@ $("bSkip").onclick=()=>{t=dur();nar.pause();duck(false);showChoices()};
 $("bHs").onclick=e=>{const on=e.currentTarget.getAttribute("aria-pressed")!=="true";e.currentTarget.setAttribute("aria-pressed",on);$("screen").classList.toggle("hidehs",!on);$("tip").hidden=true};
 $("file").onchange=e=>{const f=e.target.files[0];if(!f)return;custom[cur]=URL.createObjectURL(f);load(cur)};
 const nar=$("nar");
+const NAR={abertura:12.8,chegada:10.4,defeito:7.5,estoque:13.1,loja:7.0,montagem:12.5,encomenda:10.7,saida:8.9,rua:8.1,acerto:9.4,embalagem:7.8,fim:8.3};
+let rate=1;
 function duck(on){const target=on?0.18:0.6;const m=$("mus");const step=()=>{const d=target-m.volume;if(Math.abs(d)<0.02){m.volume=target;return}m.volume=Math.max(0,Math.min(1,m.volume+Math.sign(d)*0.03));setTimeout(step,40)};step()}
 nar.onended=()=>duck(false);
 
