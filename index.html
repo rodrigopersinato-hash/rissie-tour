@@ -108,6 +108,44 @@ video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .screen.fs .choices,.screen:fullscreen .choices{position:absolute;transform:translateY(100%);display:block;background:linear-gradient(0deg,rgba(0,0,0,.95),rgba(0,0,0,.75) 60%,transparent);padding:6% 4% 3.2%}
 .screen.fs .choices.on,.screen:fullscreen .choices.on{transform:none}
 body.fsl{overflow:hidden}
+.proc{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:48px 80px;display:flex;flex-direction:column;gap:22px;border-top:1px solid var(--line)}
+.proc-head .n{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent)}
+.proc-head h2{font-family:var(--f-disp);font-weight:700;font-size:clamp(28px,4.4vw,52px);line-height:1.05;margin:.2em 0 0;letter-spacing:-.02em}
+.proc-head p{color:rgba(245,241,238,.75);max-width:60ch;margin:.6em 0 0}
+.flow{display:flex;flex-wrap:wrap;gap:8px}
+.fchip{padding:8px 13px;border-radius:999px;border:1px solid var(--line);font-size:13px;color:rgba(245,241,238,.85)}
+.fchip b{color:var(--accent);font-weight:500;font-variant-numeric:tabular-nums;margin-right:4px}
+.fchip:hover{border-color:rgba(255,255,255,.4)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--muted)}
+.search input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--ink);font:inherit}
+.tree{display:flex;flex-direction:column;gap:10px}
+.sec{border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);scroll-margin-top:16px}
+.sec[open]{background:rgba(255,255,255,.05)}
+.sec summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:16px 18px}
+.sec summary::-webkit-details-marker{display:none}
+.sn{font-family:var(--f-disp);font-weight:300;font-size:22px;color:var(--accent);font-variant-numeric:tabular-nums}
+.st{font-family:var(--f-disp);font-weight:500;font-size:clamp(16px,2vw,20px)}
+.sl{font-size:13px;color:var(--muted)}
+.chev{width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .25s;margin-right:4px}
+.sec[open] .chev{transform:rotate(-135deg)}
+.sbody{padding:0 18px 20px;display:flex;flex-direction:column;gap:16px}
+.smeta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 16px;margin:0;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px}
+.smeta dt{color:var(--muted);font-size:11px;letter-spacing:.18em;text-transform:uppercase;padding-top:3px}
+.smeta dd{margin:0}
+.subs{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.sub{padding:14px 16px;border-radius:8px;background:rgba(0,0,0,.35);border:1px solid var(--line);min-width:0}
+.sub h4{margin:0 0 8px;font-family:var(--f-disp);font-weight:500;font-size:15px}
+.sub h4 span{color:var(--accent);font-weight:300;margin-right:4px;font-variant-numeric:tabular-nums}
+.sub ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px;color:rgba(245,241,238,.85)}
+.sub li::marker{color:var(--muted);font-size:12px}
+.sub li.hit{color:var(--gold)}
+.watch{align-self:flex-start;padding:10px 16px;border-radius:999px;background:var(--ink);color:#000;font-size:13px;font-weight:500}
+.sys-h{font-family:var(--f-disp);font-weight:500;font-size:20px;margin:18px 0 0}
+.sys{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.sysc{padding:12px 14px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted)}
+.sysc b{color:var(--ink);font-weight:500;font-size:14px}
+@media (max-width:640px){.sec summary{grid-template-columns:auto minmax(0,1fr) auto}.sl{display:none}.sbody{padding:0 14px 16px}}
 .start{position:absolute;inset:0;z-index:12;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 40%,rgba(58,22,34,.55),rgba(0,0,0,.9) 75%);text-align:center;padding:16px}
 .st-k{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent)}
 .st-t{font-family:var(--f-disp);font-weight:700;font-size:clamp(30px,6vw,72px);line-height:1;margin-top:.2em;letter-spacing:-.02em}
@@ -168,9 +206,22 @@ body.fsl{overflow:hidden}
 
   <div class="below">
     <div class="trail" id="trail"></div>
-    <div class="hint">Clique nos pontos brancos para ver o que é cada coisa. No fim de cada episódio você escolhe o próximo.</div>
+    <div class="hint">Clique nos pontos brancos para ver o que é cada coisa. No fim de cada episódio você escolhe o próximo. Role para baixo para ver todos os processos.</div>
   </div>
 </div>
+
+<section class="proc" id="processos">
+  <div class="proc-head">
+    <div class="n">Guia de processos</div>
+    <h2>Como a Rissiê funciona</h2>
+    <p>A árvore completa, setor por setor, na ordem em que a peça anda. Toque em um setor para abrir cada etapa.</p>
+  </div>
+  <div class="flow" id="flow" aria-label="Caminho da peça"></div>
+  <div class="tools"><label class="search" for="q"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" placeholder="Buscar: encomenda, RFID, acerto…"></label><button class="tb" id="expAll" type="button">Abrir tudo</button></div>
+  <div class="tree" id="tree"></div>
+  <h3 class="sys-h">Sistemas que usamos</h3>
+  <div class="sys" id="sys"></div>
+</section>
 
 <div class="drawer" id="drawer" hidden><div class="in" id="dIn"></div></div>
 
@@ -360,6 +411,140 @@ const inFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement||
 $("bFs").onclick=e=>{e.stopPropagation();inFs()?exitFs():enterFs();setTimeout(()=>{$("fsTxt").textContent=inFs()?"Sair":"Tela cheia"},400)};
 document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement){scr.classList.remove("fs");placeChoices(false)}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&scr.classList.contains("fs"))exitFs()});
+const TREE=[
+ {n:"01",id:"compra",ep:null,t:"Criação e compra",lider:"Diretoria · Roberto",equipe:"Roberto, com Marlene nos pedidos de compra",entra:"Venda das coleções anteriores e leitura de mercado",sai:"Mercadoria chegando na expedição, com preço definido",
+  sub:[
+   {t:"Definir a coleção",p:["Recomprar os modelos que mais venderam.","Escolher o restante da coleção pela leitura de mercado.","Decidir o que será fabricado e o que será comprado pronto."]},
+   {t:"Fabricar",p:["Comprar o tecido.","Fazer a peça piloto.","Produzir em facções terceirizadas.","Insumos (tags, RFID, metais e aviamentos) saem da expedição para a produção."]},
+   {t:"Comprar pronto",p:["Fornecedores da China, São Paulo, Santa Catarina e Paraná.","Pedido de compra feito pela Marlene, a pedido do Roberto."]},
+   {t:"Definir preço",p:["A expedição calcula custo e despesas de cada peça.","O Roberto define o markup e aprova o preço final."]}
+  ]},
+ {n:"02",id:"exped",ep:"chegada",t:"Expedição e recebimento",lider:"Maria",equipe:"Equipe da expedição",entra:"Mercadoria da produção local e de fora do estado",sai:"Peça conferida, precificada e liberada para o estoque",
+  sub:[
+   {t:"Recebimento e conferência",p:["Receber os produtos da produção local e de fora do estado.","Conferir quantidade, tamanho, cor e referência contra o pedido e a nota.","Separar peças com defeito e divergências.","Calcular custos e despesas para a precificação.","Liberar o produto.","Avisar o estoque com fotos, códigos, tamanhos e cores nos grupos de WhatsApp.","Receber e analisar trocas e defeitos trazidos pelos representantes.","Revisar peças de 2ª linha e criar o cadastro promocional no SISPR (reparo ou outlet)."]},
+   {t:"Separação e preparação de pedidos",p:["Separar por cliente e por transportadora.","Conferir grade e cores.","Separar insumos para a produção: tags, impressão de RFID, metais e aviamentos.","Organizar por prioridade."]},
+   {t:"Faturamento",p:["Apoiar a emissão e a conferência de notas.","Lançar as notas no sistema de compra.","Lançar os pagamentos das facções em planilha para o financeiro."]},
+   {t:"Logística",p:["Organizar as cargas e acompanhar as saídas.","Agendar coleta com a transportadora.","Dar saída de tecido com nota para a produção."]},
+   {t:"Tecidos e materiais",p:["Controlar os tecidos em planilha e dar baixa quando usados.","Controlar materiais para a produção e fazer cotação."]},
+   {t:"Qualidade",p:["Inspeção final antes de liberar a peça para o estoque."]},
+   {t:"Recepção",p:["Receber fornecedores e visitantes.","Falar com a produção por WhatsApp e e-mail.","Passar recados.","Controlar a entrada e saída de pessoas."]}
+  ]},
+ {n:"03",id:"estoque",ep:"estoque",t:"Estoque",lider:"Lucas",equipe:"Estoquistas, um por família de peças, e equipe de separação",entra:"Peça liberada pela expedição e peças que voltam da embalagem",sai:"Gôndolas abastecidas para o consignado e para a loja",
+  sub:[
+   {t:"Como o estoque é organizado",p:["Subsolo: sacolas por estação.","Térreo: entrada e separação.","1º andar: gôndolas do consignado e da loja, divididas em quente e frio.","Elevador de carga e caixas de acrílico.","Famílias: calças, shorts e tops · blusinhas, vestidos, saias, camisetas e macacões · pijamas · conjuntos de lingerie e meias · sutiãs · calcinhas · separação."]},
+   {t:"Produto novo",p:["A expedição libera.","O estoque separa.","10% vai para a Loja.","A Tamiris separa as peças das Tops conforme o pedido delas.","O restante vai para as gôndolas.","A novidade é pendurada num cabide e apresentada ao consignado."]},
+   {t:"Separação",p:["Peças misturadas (troca de estação ou retorno da rua) são separadas por categoria.","Depois, por referência.","Vão para sacolas identificadas.","Um mapa registra onde está cada referência."]},
+   {t:"Reposição",p:["O estoquista repõe conforme a gôndola esvazia.","O consignado avisa quando precisa de mais (ex.: \"hoje preciso de mais pijama\").","As caixas que sobem pelo elevador são anotadas na prancheta (cerca de 163 caixas por dia)."]},
+   {t:"Apoio aos outros setores",p:["Levar os kits montados para a conferência de saída.","Levar as caixas vazias de volta para a conferência de entrada."]}
+  ]},
+ {n:"04",id:"atend",ep:"encomenda",t:"Atendimento",lider:"Lucimara",equipe:"Central (2), SAC (1), Pink Stars (1), atendimento na loja (1) e encomendas (1)",entra:"Mensagens das consultoras e pedidos dos representantes",sai:"Encomendas anotadas, cadastros feitos e consultoras atendidas",
+  sub:[
+   {t:"Central de atendimento (Syngoo)",p:["Atender a fila geral e transferir para financeiro, marketing ou e-commerce.","Foco nas consultoras dos representantes.","Anotar as encomendas no Drive, por representante, praça e remessa.","Tirar dúvidas, enviar 2ª via de romaneio e ajustar fichas.","Reativar clientes inativas (o pedido passa pela Lucimara).","Avisar os representantes sobre clientes e desistências na praça e perguntar se querem abertura.","Atender o telefone do setor."]},
+   {t:"Disparo semanal",p:["Montar a lista das consultoras que terão kit na semana seguinte.","Disparar mensagem lembrando o acerto e pedindo sugestões e encomendas, com catálogo ou campanha.","Na sexta, imprimir as encomendas da praça e entregar às auxiliares.","Entregar encomendas retiradas na loja ou enviadas por moto táxi."]},
+   {t:"SAC",p:["Tratar reclamações: buscar solução, ajustar a ficha e verificar erro interno.","Fazer o primeiro contato com toda revendedora nova.","Cadastrar as novas que os representantes mandam pelo link.","Transferir a remessa de abertura do representante para a cliente e gerar o código da consultora.","Explicar a Rissiê e o app.","Fazer as transferências pedidas pelos representantes.","Captar cadastros da Geniuz, consultar um a um e distribuir as aptas aos representantes."]},
+   {t:"Pink Stars",p:["Atendimento exclusivo das 30 consultoras que mais vendem no ciclo (lista refeita a cada ciclo).","Enviar fotos das novidades.","Separar novidades e encomendas.","Atender presencialmente."]},
+   {t:"Atendimento na loja",p:["Atender presencialmente, com hora marcada, clientes dos representantes.","Montar kit ou complemento, separar e bipar.","Nas horas livres, ajudar na separação de encomendas ou na montagem."]},
+   {t:"Encomendas fora da praça",p:["Separar os complementos buscando em todos os setores.","Bipar e mandar para a conferência indicando box ou retirada na loja.","Avisar a cliente se a peça foi encontrada."]}
+  ]},
+ {n:"05",id:"montagem",ep:"montagem",t:"Montagem do kit (consignado)",lider:"Lucimara",equipe:"13 auxiliares, uma por representante, e 5 assistentes que cobrem faltas",entra:"Gôndolas abastecidas, encomendas e histórico da consultora",sai:"Kits bipados, com romaneio, prontos para a conferência",
+  sub:[
+   {t:"Preparação",p:["Imprimir a montagem.","Ver as clientes ativas e as encomendas.","Conferir a data de acerto.","Abrir a remessa na empresa (CNPJ) do representante.","Olhar o histórico de venda, a ficha e o que a revendedora escreveu na Geniuz.","Anotar o que vai no kit."]},
+   {t:"Cliente com pendência",p:["O SISPR bloqueia a cliente ao bipar.","A auxiliar avisa a Lucimara.","A Lucimara fala com o financeiro no grupo.","O financeiro fala com o representante.","Quando a pendência é paga ou baixada, o financeiro avisa e a montagem segue."]},
+   {t:"Montagem",p:["Calcinhas ficam em sacolas no corredor; o resto vai em caixas no carrinho.","Quando falta peça, aguardar a mercadoria subir do estoque.","Para as Pink Stars, buscar também na separação e na embalagem."]},
+   {t:"Bipe e saída",p:["Bipar peça por peça.","Fechar a caixa com o romaneio dentro.","Empilhar 6 a 7 caixas com o nome do representante.","Um estoquista leva para a conferência de saída."]},
+   {t:"Encomendas",p:["A auxiliar procura a encomenda até sexta.","Se não encontrar, a peça fica fora do kit.","Vira 2ª remessa quando a consultora pede complemento."]},
+   {t:"Kit de abertura",p:["Modelo padrão de 90 a 100 peças.","5 a 6 tipos de calcinha gradeados, conjuntos, sutiãs, fitness e casual, adulto e infantil.","Alguns representantes pedem a \"abertura melhorada\"."]},
+   {t:"Metas",p:["Cada auxiliar responde pelo valor colocado na rua em cada praça.","Metas semanais por representante e praça, definidas no início do ano.","Acompanhamento pelo valor do mês anterior, média da última venda e clientes ativas.","Ritmo de referência: cerca de 98 kits por dia."]}
+  ]},
+ {n:"06",id:"saida",ep:"saida",t:"Conferência de saída",lider:"Layne",equipe:"5 conferentes",entra:"Fileiras de kits trazidas pelo estoque",sai:"Sacolas conferidas, com etiqueta e nota, no box do representante",
+  sub:[
+   {t:"Conferir",p:["Conferir um kit por vez, bipando peça por peça.","Recontar ao ensacar, contra o romaneio.","Lançar a quantidade de sacolas."]},
+   {t:"Liberar",p:["Aguardar etiqueta e nota fiscal.","Descer a sacola pelo escorregador.","O setor de baixo coloca no box do vendedor."]},
+   {t:"Rotina",p:["Picos na segunda e na sexta.","Uma conferente cuida das encomendas; a Tatiane, da loja.","Meta de 3.000 a 3.500 peças por conferente por dia.","Sem kits para conferir, a equipe ajuda a embalagem."]}
+  ]},
+ {n:"07",id:"rua",ep:"rua",t:"Rua: representantes e consultoras",lider:"13 representantes e a Loja",equipe:"Consultoras revendedoras em cada praça",entra:"Sacola conferida no box",sai:"Venda feita e sacola de volta para o acerto",
+  sub:[
+   {t:"Entrega",p:["O representante leva as sacolas da sua praça.","Entrega para cada consultora."]},
+   {t:"Venda",p:["A consultora vende de casa em casa por 30 a 40 dias.","Ela fica com cerca de 30% do que vende."]},
+   {t:"Acerto em campo",p:["O representante bipa a sacola na volta.","Recebe o valor da venda.","Recolhe o que não vendeu e traz de volta para a empresa."]}
+  ]},
+ {n:"08",id:"entrada",ep:"acerto",t:"Conferência de entrada",lider:"Jhennifer",equipe:"Conferentes, com Jeferson e Thiago no descarregamento",entra:"Sacolas que voltam da rua",sai:"Devolução conferida, pronta para o acerto e para a embalagem",
+  sub:[
+   {t:"Descarregar",p:["Descarregamento duas vezes por semana: segunda (7 vendedores) e sexta (6 vendedores).","Organizar as sacolas nos boxes.","Separar por consultora, com a quantidade de sacolas de cada uma."]},
+   {t:"Conferir a devolução",p:["Quando o vendedor bipou certo em campo, a conferência é rápida.","Se há falta ou sobra, recontar e revisar caixas e peças.","Avisar o vendedor da falta só depois da segunda conferência."]},
+   {t:"Fechar",p:["Devolver os kits que não movimentaram na semana."]}
+  ]},
+ {n:"09",id:"acerto",ep:"acerto",t:"Acerto",lider:"Rodrigo e Roberto",equipe:"Com apoio da Pâmella (financeiro)",entra:"Devolução conferida e valores recebidos",sai:"Acerto fechado e consultora liberada para o próximo kit",
+  sub:[
+   {t:"Receber",p:["Rodrigo ou Roberto conferem dinheiro e cheque.","Cartão, boleto e depósito ficam com o financeiro."]},
+   {t:"Lançar",p:["O acerto é lançado no RRP.","A Pâmella resolve os erros de sistema."]},
+   {t:"Regra",p:["O saldo em aberto deve ser pago antes do kit novo."]}
+  ]},
+ {n:"10",id:"embal",ep:"embalagem",t:"Embalagem e RFID",lider:"Ana",equipe:"19 pessoas: roupas (7), bojos (4), calcinhas (2), reposição (1), limpeza (1) e RFID (4)",entra:"Peças que voltaram da rua",sai:"Peças limpas, dobradas e etiquetadas de volta ao estoque",
+  sub:[
+   {t:"Triagem",p:["Peça boa: embalar.","Peça suja: limpeza.","Peça com defeito: Maria, costureira ou Outlet.","Peça sem código: RFID.","Peça pronta: volta para o estoque."]},
+   {t:"Dobra",p:["Roupas, bojos e calcinhas em postos separados.","Todas ajudam 1 hora por dia na dobra de calcinha."]},
+   {t:"Sistema e RFID",p:["Andressa: pega as sacolas, tira as etiquetas, valida a mercadoria, etiqueta e devolve ao estoque; faz as etiquetas dos fornecedores e apoia a expedição.","Francine: tira a etiqueta das peças que voltam sem código e aplica etiqueta nova.","2 pessoas etiquetando e 2 no sistema."]}
+  ]},
+ {n:"11",id:"loja",ep:"loja",t:"Loja e Outlet",lider:"Fátima",equipe:"3 consultoras, Tatiane (conferência), caixa e motorista (quartas)",entra:"10% da novidade e clientes presenciais",sai:"Kits de balcão, vendas presenciais e peças do Outlet",
+  sub:[
+   {t:"Como funciona",p:["Consignado de balcão e clientes presenciais.","No sistema, a Loja é um \"representante\" com 5 praças: Jurerê, Leblon, Maragogi, Ipanema e Tambaú.","Recebe 10% da mercadoria nova.","Prazo de 30 a 35 dias."]},
+   {t:"Revendedora nova",p:["Primeiro vai para a consultora que mais perdeu clientes, para recuperar a praça.","Depois, rodízio: quem recebeu por último fica por último."]},
+   {t:"Cobrança e crédito",p:["Pix, boleto, link e dinheiro, registrados no sistema e na planilha do acerto.","Primeiro kit passa pelo cadastro (consulta de CPF), com média de R$ 4 mil; os seguintes sobem conforme a venda.","Kit com saldo em aberto só com autorização da gerente."]},
+   {t:"Outlet",p:["Fica ao lado da loja.","Recebe peças com defeito, em promoção e paradas."]}
+  ]},
+ {n:"12",id:"fin",ep:null,t:"Financeiro e administrativo",lider:"Pâmella",equipe:"Com a Carol no financeiro",entra:"Acertos, notas, cobranças e pedidos dos setores",sai:"Caixa em dia, sistemas funcionando e cadastros liberados",
+  sub:[
+   {t:"Cobrança e crédito",p:["Acertos e cobrança: kits e notas em atraso, consultoras atrasadas, kit perdido.","Análise de crédito (SPC).","Liberar clientes com pendência para a montagem."]},
+   {t:"Fiscal",p:["Notas fiscais e relatório contábil.","Arquivo dos acertos."]},
+   {t:"Sistemas e TI",p:["Logins, e-mails e senhas.","Erros de acerto e suporte aos vendedores, com o Ivan (TI) e o Alexandro (SISPR).","Computadores e impressoras.","Syngoo."]},
+   {t:"Administrativo",p:["Compras de escritório.","Multas.","Preparo de vendedor novo.","Código e preço do Outlet."]}
+  ]},
+ {n:"13",id:"mkt",ep:null,t:"Marketing",lider:"Roberta e Vitória",equipe:"Roberta em meio período",entra:"Novidades da coleção e campanhas",sai:"Fotos, catálogos e materiais para as consultoras",
+  sub:[
+   {t:"Rotina",p:["Fotos das novidades.","Catálogos e campanhas usados no disparo semanal do atendimento.","Detalhamento do setor em andamento."]}
+  ]}
+];
+const SYS=[["SISPR","Sistema principal: remessas, clientes, financeiro, produtos e RFID."],["RRP","Painel interno: acertos, produtividade e indicadores."],["Syngoo","Atendimento às consultoras."],["Geniuz","Cadastro e app das revendedoras."],["Drive e planilhas","Encomendas, metas e controles."],["WhatsApp","Avisos entre setores e com as consultoras."],["EzPoint","Ponto dos funcionários."]];
+
+function buildTree(){
+  const flow=$("flow"), list=$("tree");
+  TREE.forEach(s=>{
+    const a=document.createElement("button");a.className="fchip";a.type="button";
+    a.innerHTML=`<b>${s.n}</b> `;a.append(s.t);a.onclick=()=>{const d=document.getElementById("p-"+s.id);d.open=true;d.scrollIntoView({behavior:"smooth",block:"start"})};
+    flow.appendChild(a);
+    const d=document.createElement("details");d.className="sec";d.id="p-"+s.id;
+    const sum=document.createElement("summary");
+    sum.innerHTML=`<span class="sn">${s.n}</span><span class="st"></span><span class="sl"></span><span class="chev" aria-hidden="true"></span>`;
+    sum.querySelector(".st").textContent=s.t;sum.querySelector(".sl").textContent=s.lider;
+    d.appendChild(sum);
+    const body=document.createElement("div");body.className="sbody";
+    const meta=document.createElement("dl");meta.className="smeta";
+    [["Líder",s.lider],["Equipe",s.equipe],["Recebe",s.entra],["Entrega",s.sai]].forEach(([k,v])=>{const dt=document.createElement("dt");dt.textContent=k;const dd=document.createElement("dd");dd.textContent=v;meta.append(dt,dd)});
+    body.appendChild(meta);
+    const grid=document.createElement("div");grid.className="subs";
+    s.sub.forEach((u,i)=>{
+      const c=document.createElement("div");c.className="sub";
+      const h=document.createElement("h4");h.innerHTML=`<span>${s.n}.${i+1}</span> `;h.append(u.t);c.appendChild(h);
+      const ol=document.createElement("ol");u.p.forEach(x=>{const li=document.createElement("li");li.textContent=x;ol.appendChild(li)});c.appendChild(ol);
+      grid.appendChild(c);
+    });
+    body.appendChild(grid);
+    if(s.ep){const b=document.createElement("button");b.type="button";b.className="watch";b.textContent="▶  Ver este episódio";
+      b.onclick=()=>{window.scrollTo({top:0,behavior:"smooth"});if(!started){$("bStart").click()}load(s.ep)};body.appendChild(b)}
+    d.appendChild(body);list.appendChild(d);
+  });
+  const sys=$("sys");SYS.forEach(([k,v])=>{const c=document.createElement("div");c.className="sysc";const b=document.createElement("b");b.textContent=k;const p=document.createElement("span");p.textContent=v;c.append(b,p);sys.appendChild(c)});
+  $("expAll").onclick=()=>{const open=[...list.querySelectorAll("details")].some(d=>!d.open);list.querySelectorAll("details").forEach(d=>d.open=open);$("expAll").textContent=open?"Recolher tudo":"Abrir tudo"};
+  $("q").oninput=e=>{const q=e.target.value.trim().toLowerCase();
+    list.querySelectorAll("details").forEach(d=>{
+      if(!q){d.hidden=false;d.querySelectorAll("li").forEach(li=>li.classList.remove("hit"));return}
+      const txt=d.textContent.toLowerCase();const m=txt.includes(q);d.hidden=!m;if(m)d.open=true;
+      d.querySelectorAll("li").forEach(li=>li.classList.toggle("hit",li.textContent.toLowerCase().includes(q)));
+    })};
+}
+buildTree();
+
 load("abertura"); playing=false; setIcon(); vid.pause();
 if(matchMedia("(prefers-reduced-motion: reduce)").matches){playing=false;setIcon()}
 requestAnimationFrame(loop);
