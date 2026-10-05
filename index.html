@@ -87,6 +87,8 @@ video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .timer i{display:block;height:100%;width:100%;background:#fff;transform-origin:left}
 
 .below{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.goproc{align-self:flex-start;display:inline-flex;gap:8px;align-items:center;padding:12px 20px;border-radius:999px;background:var(--accent);color:#fff;text-decoration:none;font-weight:500;font-size:15px}
+.goproc:hover{filter:brightness(1.1)}
 .trail{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
 .chip{flex:0 0 auto;padding:7px 12px;border-radius:999px;font-size:12px;border:1px solid var(--line);color:var(--muted)}
 .chip.seen{color:var(--ink);border-color:rgba(255,255,255,.3)}
@@ -205,6 +207,7 @@ body.fsl{overflow:hidden}
   </div>
 
   <div class="below">
+    <a class="goproc" href="#processos">Ver todos os processos da Rissiê <span aria-hidden="true">↓</span></a>
     <div class="trail" id="trail"></div>
     <div class="hint">Clique nos pontos brancos para ver o que é cada coisa. No fim de cada episódio você escolhe o próximo. Role para baixo para ver todos os processos.</div>
   </div>
